@@ -14,13 +14,15 @@ public class DFS {
             }
         }
         List<Integer> ordre = new ArrayList<>();
-        dfs(root, enfants, ordre);
+        boolean[] visite = new boolean[n];
+        dfs(root, enfants,visite, ordre);
         return ordre;
     }
-    private static void dfs(int u, List<List<Integer>> enfants, List<Integer> ordre) {
+    private static void dfs(int u, List<List<Integer>> enfants,boolean[] visite, List<Integer> ordre) {
         ordre.add(u);
-        for (int v : enfants.get(u)) {
-            dfs(v, enfants, ordre);
+        visite[u] = true;
+        if (!visite[u]) {
+            dfs(u, enfants, visite, ordre);
         }
     }
 }
