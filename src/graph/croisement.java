@@ -17,8 +17,4 @@ public class croisement {
         return nom;
     }
 
-    @Override
-    public String toString() {
-        return nom;
-    }
 }

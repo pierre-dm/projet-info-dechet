@@ -11,6 +11,20 @@ public class dijkstra {
             this.dist = dist;
             this.parent = parent;
         }
+        public List<Integer> reconstruireChemin(int cible) {
+            List<Integer> chemin = new ArrayList<>();
+            if (cible < 0 || cible >= dist.length) return chemin;
+            if (dist[cible] == Integer.MAX_VALUE) {
+                return chemin;
+            }
+            int courant = cible;
+            while (courant != -1) {
+                chemin.add(courant);
+                courant = parent[courant];
+            }
+            Collections.reverse(chemin);
+            return chemin;
+        }
     }
 
     public static Resultat executer(List<List<rue>> adj, int source) {
@@ -18,26 +32,22 @@ public class dijkstra {
         int[] dist = new int[n];
         int[] parent = new int[n];
         boolean[] visited = new boolean[n];
-
         Arrays.fill(dist, Integer.MAX_VALUE);
         Arrays.fill(parent, -1);
-
         dist[source] = 0;
-
         PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
         pq.add(new int[]{0, source});
 
         while (!pq.isEmpty()) {
             int[] courant = pq.poll();
             int u = courant[1];
-
-            if (visited[u]) continue;
+            if (visited[u]){
+                continue;
+            }
             visited[u] = true;
-
             for (rue rue : adj.get(u)) {
                 int v = rue.getDestination();
                 int w = rue.getDistance();
-
                 if (dist[u] + w < dist[v]) {
                     dist[v] = dist[u] + w;
                     parent[v] = u;
@@ -45,7 +55,6 @@ public class dijkstra {
                 }
             }
         }
-
         return new Resultat(dist, parent);
     }
 }
