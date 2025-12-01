@@ -48,7 +48,7 @@ public class dijkstra {
             for (rue rue : adj.get(u)) {
                 int v = rue.getDestination();
                 int w = rue.getDistance();
-                if (dist[u] + w < dist[v]) {
+                if (dist[u] != Integer.MAX_VALUE && dist[u] + w < dist[v]) {
                     dist[v] = dist[u] + w;
                     parent[v] = u;
                     pq.add(new int[]{dist[v], v});

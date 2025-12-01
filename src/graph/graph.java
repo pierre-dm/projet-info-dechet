@@ -31,8 +31,8 @@ public class graph {
         int A = ajouterCroisement(a);
         int B = ajouterCroisement(b);
 
-        adj.get(A).add(new rue(A, B, distance));
-        adj.get(B).add(new rue(B, A, distance));
+        adj.get(A).add(new rue(B, distance));
+        adj.get(B).add(new rue(A, distance));
     }
 
     public void chargerDepuisFichier(String fichier) throws IOException {
@@ -48,19 +48,15 @@ public class graph {
                     String a = parts[0];
                     String b = parts[1];
                     int dist = Integer.parseInt(parts[2]);
-                    ajouterRueDoubleSens(a, b, dist);
+                    ajouterRueDoubleSens(a,b, dist);
                 }
                 else if (parts.length == 4) {
                     String a = parts[0];
                     String b = parts[1];
                     int dist = Integer.parseInt(parts[2]);
                     int capaciteB = Integer.parseInt(parts[3]);
-
-                    int A = ajouterCroisement(a);
+                    ajouterRueDoubleSens(a, b, dist);
                     int B = ajouterCroisement(b);
-
-                    adj.get(A).add(new rue(A, B, dist));
-                    adj.get(B).add(new rue(B, A, dist));
                     capacites.set(B, capaciteB);
                 }
             }
@@ -91,5 +87,12 @@ public class graph {
     }
     public int getCapacite(int id) {
         return capacites.get(id);
+    }
+    public int[] getToutesCapacites() {
+        int[] tab = new int[capacites.size()];
+        for (int i = 0; i < tab.length; i++) {
+            tab[i] = getCapacite(i);
+        }
+        return tab;
     }
 }
