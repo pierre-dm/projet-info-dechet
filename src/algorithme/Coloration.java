@@ -1,10 +1,8 @@
 package algorithme;
+
 import graph.graph;
 import graph.rue;
-import graph.graph;
-
 import java.util.*;
-
 
 public class Coloration {
 
@@ -13,36 +11,56 @@ public class Coloration {
         int[] couleur = new int[n];
         Arrays.fill(couleur, -1);
 
-        // Trier les sommets par degré décroissant
+        // Liste des sommets triés par degré décroissant
         List<Integer> sommets = new ArrayList<>();
         for (int i = 0; i < n; i++) sommets.add(i);
 
-        sommets.sort((a,b) -> g.getDegre(b) - g.getDegre(a));
+        sommets.sort((a, b) -> g.getDegre(b) - g.getDegre(a));
 
         int currentColor = 0;
 
-        for (int s : sommets) {
-            if (couleur[s] != -1) continue;
+        for (int v : sommets) {
+            if (couleur[v] != -1) continue;
 
-            couleur[s] = currentColor;
+            couleur[v] = currentColor;
 
-            for (int t : sommets) {
-                if (couleur[t] == -1 && !sontVoisins(g, s, t)) {
-                    couleur[t] = currentColor;
+            for (int u : sommets) {
+                if (couleur[u] == -1 && peutRecevoirCouleur(g, u, couleur, currentColor)) {
+                    couleur[u] = currentColor;
                 }
             }
 
             currentColor++;
         }
 
+        Map<Integer, Integer> freq = new HashMap<>();
+        for (int c = 0; c < currentColor; c++) {
+            freq.put(c, 0);
+        }
+        for (int c : couleur) {
+            freq.put(c, freq.get(c) + 1);
+        }
+        List<Integer> couleursTriees = new ArrayList<>(freq.keySet());
+        couleursTriees.sort((a, b) -> freq.get(b) - freq.get(a));
+
+        int[] newIndex = new int[currentColor];
+        for (int i = 0; i < couleursTriees.size(); i++) {
+            int oldColor = couleursTriees.get(i);
+            newIndex[oldColor] = i;
+        }
+        for (int i = 0; i < n; i++) {
+            couleur[i] = newIndex[couleur[i]];
+        }
         return couleur;
     }
 
-    private static boolean sontVoisins(graph g, int a, int b) {
-        for (rue r : g.getAdj().get(a)) {
-            if (r.getDestination() == b) return true;
+    private static boolean peutRecevoirCouleur(graph g, int s, int[] couleur, int c) {
+        for (rue r : g.getAdj().get(s)) {
+            int voisin = r.getDestination();
+            if (couleur[voisin] == c) {
+                return false;
+            }
         }
-        return false;
+        return true;
     }
-
 }
