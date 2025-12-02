@@ -4,7 +4,7 @@ import algorithme.*;
 import java.util.*;
 
 public class Main {
-    private static int[][] construireMatriceDistances(graph g,List<Integer> points) {
+    private static int[][] construireMatriceDistances(graph g, List<Integer> points) {
         int n = points.size();
         int[][] dist = new int[n][n];
 
@@ -18,6 +18,7 @@ public class Main {
         }
         return dist;
     }
+
     public static void main(String[] args) throws Exception {
         graph g = new graph();
         g.chargerDepuisFichier("graphtheme2.txt");
@@ -25,6 +26,8 @@ public class Main {
         System.out.println("Sommets chargés : " + g.getNbcroisements());
 
         int idCT = g.getId("CT");
+
+        // Construire la liste des points : CT + sommets avec capacité > 0
         List<Integer> points = new ArrayList<>();
         points.add(idCT);
         for (int i = 0; i < g.getNbcroisements(); i++) {
@@ -33,19 +36,29 @@ public class Main {
                 points.add(i);
             }
         }
-        int[][] dist = construireMatriceDistances(g,points);
+
+        int[][] dist = construireMatriceDistances(g, points);
+
         System.out.println("Nombre de points de collecte (y compris CT) pris en compte dans le MST : " + points.size());
         System.out.print("Liste des points : ");
         for (int idx : points) {
             System.out.print(g.getNom(idx) + " ");
         }
         System.out.println();
-        int[] parent = Prim.calculer(dist, idCT);
-        List<Integer> preordre = DFS.preordre(parent, idCT);
+
+        // racine dans la matrice dist = indice de CT dans "points", donc 0
+        int rootIndex = 0;
+
+        int[] parent = Prim.calculer(dist, rootIndex);
+        List<Integer> preordre = DFS.preordre(parent, rootIndex);
+
+        // Traduction préordre (indices de la matrice -> indices du graphe)
         List<Integer> preordreReel = new ArrayList<>();
         for (int idx : preordre) {
             preordreReel.add(points.get(idx));
         }
+
+        // Shortcutting
         List<Integer> ordre = shortcutting.appliquer(preordreReel);
 
         int C = 10;
@@ -61,8 +74,8 @@ public class Main {
         int num = 1;
         for (List<Integer> t : tournees) {
             System.out.print("T" + num++ + " : ");
-             for (int v : t) {
-               System.out.print(g.getNom(v) + " ");
+            for (int v : t) {
+                System.out.print(g.getNom(v) + " ");
             }
             System.out.println();
         }
