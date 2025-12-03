@@ -113,8 +113,11 @@ public class HO1theme1 {
 
             List<Integer> tour;
             int coutTotal;
-
-            if (distFar <= distNear + longueurArete) {
+            System.out.println(coutOption1);
+            System.out.println(coutOption2);
+            System.out.println(distFar);
+            System.out.println(distNear + longueurArete);
+            if (distFar < distNear + longueurArete) {
                 // Option 1 : on revient par le côté le plus loin
                 coutTotal = coutOption1;
                 tour = construireTourTraverserUneFois(g, res, near, far);
