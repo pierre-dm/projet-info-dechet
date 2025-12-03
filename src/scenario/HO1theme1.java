@@ -119,8 +119,6 @@ public class HO1theme1 {
                 System.out.println("Sommet inconnu.\n");
                 return;
             }
-
-            // On prend l'extrémité la plus proche de CT
             int near = (resCT.dist[idA] <= resCT.dist[idB]) ? idA : idB;
             points.add(near);
         }

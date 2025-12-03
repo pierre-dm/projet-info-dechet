@@ -34,7 +34,6 @@ public class HO1theme2 {
     }
     public static void executerApproche1(graph g, int C, int idCT) {
 
-        // Liste des points réels à visiter (capacité > 0)
         List<Integer> nonVisites = new ArrayList<>();
         for (int i = 0; i < g.getNbcroisements(); i++) {
             if (i != idCT && g.getCapacite(i) > 0) {
@@ -45,8 +44,6 @@ public class HO1theme2 {
         ordre.add(idCT);
 
         int courant = idCT;
-
-        // Algorithme PPV CORRECT
         while (!nonVisites.isEmpty()) {
 
             Resultat res = dijkstra.executer(g.getAdj(), courant);
@@ -75,43 +72,36 @@ public class HO1theme2 {
 
     public static void executerApproche2(graph g, int C, int idCT) {
 
-        // 1) Construire la liste des points : CT + contenance > 0
         List<Integer> points = new ArrayList<>();
         points.add(idCT);
-        for (int i = 0; i < g.getNbcroisements(); i++)
-            if (i != idCT && g.getCapacite(i) > 0)
+        for (int i = 0; i < g.getNbcroisements(); i++) {
+            if (i != idCT && g.getCapacite(i) > 0) {
                 points.add(i);
+            }
+        }
 
-        // 2) Matrice distances
         int[][] dist = construireMatriceDistances(g, points);
 
-        // 3) MST via Prim
         int[] parent = Prim.calculer(dist, 0);
 
-        // 4) DFS préordre TRIÉ PAR CAPACITÉ (clé du résultat correct)
-        List<Integer> preordreReduit = preordreAvecCapacites(parent, 0, points, g);
-
-        // 5) Traduction indices MST → indices réels
+        List<Integer> preordreReduit = DFS.preordre(parent, 0, Comparator.comparingInt(idx -> g.getCapacite(points.get(idx))));
         List<Integer> ordre = new ArrayList<>();
-        for (int idx : preordreReduit)
+        for (int idx : preordreReduit) {
             ordre.add(points.get(idx));
+        }
 
-        // 6) Shortcutting
+        // 6) Shortcutting : suppression des visites redondantes
         ordre = shortcutting.appliquer(ordre);
 
-        // 7) Tournées
+        // 7) Découpage en tournées selon la capacité du camion
         int[] caps = g.getToutesCapacites();
         List<List<Integer>> tournees =
                 decoupecapacite.decouper(ordre, caps, C, idCT);
 
-        System.out.println("=== Approche 2 : MST + DFS + shortcutting ===");
+        System.out.println("\n=== Approche 2 : MST + DFS + shortcutting ===");
         afficher(ordre, tournees, g);
     }
 
-
-    // ----------------------------------------------------------
-    //              OUTILS INTERNES
-    // ----------------------------------------------------------
     private static void afficher(List<Integer> ordre, List<List<Integer>> tournees, graph g) {
         System.out.print("Ordre : ");
         for (int v : ordre) System.out.print(g.getNom(v) + " ");
@@ -187,7 +177,6 @@ public class HO1theme2 {
 
         List<Integer> fils = new ArrayList<>(enfants.get(u));
 
-        // tri PAR CAPACITÉ CROISSANTE (clé pour avoir le bon ordre)
         fils.sort(Comparator.comparingInt(idx ->
                 g.getCapacite(points.get(idx)))
         );
