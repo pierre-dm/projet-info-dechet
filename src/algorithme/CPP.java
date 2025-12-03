@@ -39,7 +39,7 @@ public class CPP {
 
         int[][] dist = new int[n][n];
         for (int u = 0; u < n; u++) {
-            dijkstra.Resultat res = dijkstra.executer(g.getAdj(), u);
+            Resultat res = dijkstra.executer(g.getAdj(), u);
             dist[u] = res.dist;
         }
         List<int[]> bestPairs = new ArrayList<>();
@@ -68,7 +68,7 @@ public class CPP {
         for (int[] pair : bestPairs) {
             int u = pair[0];
             int v = pair[1];
-            dijkstra.Resultat res = dijkstra.executer(g.getAdj(), u);
+            Resultat res = dijkstra.executer(g.getAdj(), u);
             List<Integer> chemin = res.reconstruireChemin(v);
             for (int i = 0; i < chemin.size() - 1; i++) {
                 int a = chemin.get(i);

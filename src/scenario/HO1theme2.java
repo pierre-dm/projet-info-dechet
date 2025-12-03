@@ -34,7 +34,7 @@ public class HO1theme2 {
         // Algorithme PPV CORRECT
         while (!nonVisites.isEmpty()) {
 
-            dijkstra.Resultat res = dijkstra.executer(g.getAdj(), courant);
+            Resultat res = dijkstra.executer(g.getAdj(), courant);
 
             int best = -1;
             int minDist = Integer.MAX_VALUE;

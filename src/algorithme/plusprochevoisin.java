@@ -13,7 +13,7 @@ public class plusprochevoisin {
         ordre.add(courant);
 
         for (int k = 1; k < n; k++) {
-            dijkstra.Resultat res = dijkstra.executer(g.getAdj(), courant);
+            Resultat res = dijkstra.executer(g.getAdj(), courant);
             int[] dist = res.dist;
             int best = Integer.MAX_VALUE;
             int next = -1;
