@@ -15,7 +15,7 @@ import java.util.List;
  *
  * Complexité : O(n^2 * 2^n) avec n = nombre de sommets du sous-graphe.
  */
-public class HeldKarp {
+public class HeldKarpHOI1TH1PB1 {
 
     /** Résultat : coût total minimal + tournée correspondante. */
     public static class Resultat {

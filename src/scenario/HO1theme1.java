@@ -14,8 +14,8 @@ public class HO1theme1 {
 
         while (true) {
             System.out.println(" HO1 - Thème 1 ");
-            System.out.println("1. Exécuter l'hypothèse 1 (un particulier sur une arête)");
-            System.out.println("2. Exécuter l'hypothèse 2 (non implémentée pour l'instant)");
+            System.out.println("1. Hypothèse 1 (un particulier sur une arête)");
+            System.out.println("2. Hypothèse 2 (tournée d'une dizaine de particulier)");
             System.out.println("0. Quitter");
             System.out.print("Votre choix : ");
 
@@ -26,10 +26,10 @@ public class HO1theme1 {
                     executerHypothese1(sc);
                     break;
                 case "2":
-                    System.out.println("Hypothèse 2 : à implémenter plus tard.\n");
+                    System.out.println("Hypothèse 2:\n");
                     break;
                 case "0":
-                    System.out.println("Au revoir.");
+                    System.out.println("Fermeture programme");
                     return;
                 default:
                     System.out.println("Choix invalide.\n");
@@ -38,9 +38,10 @@ public class HO1theme1 {
     }
 
     /**
-     * Hypothèse 1 : un seul particulier sur une arête (A,B).
-     * On part de CT, on visite le particulier (donc on traverse l'arête),
-     * puis on retourne à CT en choisissant le meilleur côté.
+     * Hypothese 1: chemin le plus rapide pour aller récuperer des encombrans à un particulier
+     * en partant et en revenant au centre de tri CT.
+     * =>Dijkstra vers un des sommets autour du particulier, puis verification du chemin retour
+     * le plus court avec les distances deja connues  après traversée de l'arête du particulier.
      */
     private static void executerHypothese1(Scanner sc) {
         try {
@@ -48,12 +49,12 @@ public class HO1theme1 {
             g.chargerDepuisFichier("graph1.txt");
 
             int idCT = g.getId("CT");
-
+            /*
             System.out.println("\nGraphe chargé depuis graph1.txt");
             System.out.println("Sommets disponibles :");
             g.getCroisements().forEach(c -> System.out.print(c.getNom() + " "));
             System.out.println("\n");
-
+            */
             // Saisie des extrémités de l'arête où se trouve le particulier
             System.out.print("Nom du premier sommet de l'arête (ex : I1) : ");
             String nomA = sc.nextLine().trim();
@@ -71,7 +72,7 @@ public class HO1theme1 {
 
             int longueurArete = getDistanceEntre(g, idA, idB);
             if (longueurArete < 0) {
-                System.out.println("Erreur : il n'existe pas d'arête directe entre "
+                System.out.println("Erreur : il n'existe pas d'arête reliant "
                         + nomA + " et " + nomB + ".\n");
                 return;
             }
@@ -113,10 +114,7 @@ public class HO1theme1 {
 
             List<Integer> tour;
             int coutTotal;
-            System.out.println(coutOption1);
-            System.out.println(coutOption2);
-            System.out.println(distFar);
-            System.out.println(distNear + longueurArete);
+
             if (distFar < distNear + longueurArete) {
                 // Option 1 : on revient par le côté le plus loin
                 coutTotal = coutOption1;
