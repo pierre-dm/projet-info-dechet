@@ -3,34 +3,38 @@ import graph.graph;
 import java.util.*;
 
 public class plusprochevoisin {
-    public static List<Integer> calculer(graph g, int start) {
-        int n = g.getNbcroisements();
-        boolean[] visite = new boolean[n];
-        List<Integer> ordre = new ArrayList<>();
+    public static List<Integer> calculer(graph g, List<Integer> points) {
+
+        List<Integer> aVisiter = new ArrayList<>(points);
+        int start = aVisiter.remove(0);  // CT
+
+        List<Integer> tour = new ArrayList<>();
+        tour.add(start);
 
         int courant = start;
-        visite[courant] = true;
-        ordre.add(courant);
 
-        for (int k = 1; k < n; k++) {
+        while (!aVisiter.isEmpty()) {
+
             Resultat res = dijkstra.executer(g.getAdj(), courant);
-            int[] dist = res.dist;
-            int best = Integer.MAX_VALUE;
-            int next = -1;
 
-            for (int v = 0; v < n; v++) {
-                if (!visite[v] && dist[v] < best) {
-                    best = dist[v];
-                    next = v;
+            int best = -1;
+            int bestDist = Integer.MAX_VALUE;
+
+            for (int v : aVisiter) {
+                if (res.dist[v] < bestDist) {
+                    bestDist = res.dist[v];
+                    best = v;
                 }
             }
-            if (next == -1){
-                break;
-            }
-            visite[next] = true;
-            ordre.add(next);
-            courant = next;
+
+            tour.add(best);
+            aVisiter.remove(Integer.valueOf(best));
+            courant = best;
         }
-        return ordre;
+
+        // Retour au dépôt
+        tour.add(start);
+
+        return tour;
     }
 }

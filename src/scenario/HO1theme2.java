@@ -5,27 +5,42 @@ import graph.*;
 import java.util.*;
 
 public class HO1theme2 {
-    public static void executer() throws Exception {
+    public static void executer(Scanner sc) throws Exception {
 
         graph g = new graph();
         g.chargerDepuisFichier("graphtheme2.txt");
         int idCT = g.getId("CT");
         int C = 10;
-        System.out.println("=== Thème 2 ===");
+        System.out.println("HO1 Thème 2 ");
         System.out.println("Sommets chargés : " + g.getNbcroisements());
         System.out.println("Capacité camion : " + C + "\n");
-
-        executerApproche1(g, C, idCT);
-        executerApproche2(g, C, idCT);
+        System.out.println("1. H01 Thème 2 approche 1");
+        System.out.println("2. H01 Thème 2 approche 2");
+        System.out.println("0. retour");
+        System.out.print("Votre choix : ");
+        String choix = sc.nextLine().trim();
+        switch (choix) {
+            case "1":
+                executerApproche1(g, C, idCT);
+                break;
+            case "2":
+                executerApproche2(g, C, idCT);
+                break;
+            case "0":
+                return;
+            default:
+                System.out.println("Choix invalide.\n");
+        }
     }
     public static void executerApproche1(graph g, int C, int idCT) {
 
         // Liste des points réels à visiter (capacité > 0)
         List<Integer> nonVisites = new ArrayList<>();
-        for (int i = 0; i < g.getNbcroisements(); i++)
-            if (i != idCT && g.getCapacite(i) > 0)
+        for (int i = 0; i < g.getNbcroisements(); i++) {
+            if (i != idCT && g.getCapacite(i) > 0) {
                 nonVisites.add(i);
-
+            }
+        }
         List<Integer> ordre = new ArrayList<>();
         ordre.add(idCT);
 
