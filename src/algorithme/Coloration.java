@@ -11,7 +11,6 @@ public class Coloration {
         int[] couleur = new int[n];
         Arrays.fill(couleur, -1);
 
-        // Liste des sommets triés par degré décroissant
         List<Integer> sommets = new ArrayList<>();
         for (int i = 0; i < n; i++) sommets.add(i);
 
