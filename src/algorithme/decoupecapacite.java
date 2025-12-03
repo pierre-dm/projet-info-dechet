@@ -1,4 +1,4 @@
-package graph;
+package algorithme;
 import java.util.*;
 public class decoupecapacite {
     public static List<List<Integer>> decouper(List<Integer> ordre, int[] capacites, int C, int idDepot) {
