@@ -5,12 +5,7 @@ import java.util.*;
 
 public class CapacitePlanning {
 
-    public static Map<Integer, List<Integer>> decouperJours(
-            graph g,
-            int[] couleurs,
-            int[] quantites,
-            int N,
-            int Cmax)
+    public static Map<Integer, List<Integer>> decouperJours(graph g, int[] couleurs, int[] quantites, int N, int Cmax)
     {
         Map<Integer, List<Integer>> planning = new HashMap<>();
 
