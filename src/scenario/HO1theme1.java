@@ -13,7 +13,7 @@ public class HO1theme1 {
         Scanner sc = new Scanner(System.in);
 
         while (true) {
-            System.out.println("=== HO1 - Thème 1 ===");
+            System.out.println(" HO1 - Thème 1 ");
             System.out.println("1. Exécuter l'hypothèse 1 (un particulier sur une arête)");
             System.out.println("2. Exécuter l'hypothèse 2 (non implémentée pour l'instant)");
             System.out.println("0. Quitter");
