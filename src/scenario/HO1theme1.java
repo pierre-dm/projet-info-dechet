@@ -10,7 +10,7 @@ import java.util.*;
 public class HO1theme1 {
     public static void executer(Scanner sc)throws IOException {
         graph g = new graph();
-        g.chargerDepuisFichier("graphtheme2.txt");
+        g.chargerDepuisFichier("graph1.txt");
         System.out.println("HO1 Thème 1 ");
         System.out.println("1. H01 Thème 1 problematique 1");
         System.out.println("2. H01 Thème 1 problematique 2");
@@ -19,12 +19,20 @@ public class HO1theme1 {
         String choix = sc.nextLine().trim();
         switch (choix) {
             case "1":
+                System.out.println("1. H01 Thème 1 problematique 1 hypothese 1");
+                System.out.println("2. H01 Thème 1 problematique 1 hypothese 2");
+                System.out.println("0. retour");
+                System.out.print("Votre choix : ");
                 choix = sc.nextLine().trim();
                 switch (choix) {
                     case "1":
                         pb1hypothese1(g, sc);
+                        break;
                     case "2":
                         pb1hypothese2(g, sc);
+                        break;
+                    case "0":
+                        return;
                 }
                 break;
             case "2":
@@ -78,19 +86,16 @@ public class HO1theme1 {
 
         List<Integer> chemin;
         if (coutUneFois <= coutAllerRetour) {
-            System.out.println("→ Stratégie : traverser l’arête une seule fois.\n");
             chemin = cheminTraverseUneFois(res, near, far);
         } else {
-            System.out.println("→ Stratégie : aller-retour sur l’arête.\n");
             chemin = cheminAllerRetour(res, near, far);
         }
-
         System.out.println("Chemin optimal : " + formater(g, chemin));
     }
 
     public static void pb1hypothese2(graph g, Scanner sc) {
 
-        System.out.println("\n=== THÈME 1 — Problématique 1 — Hypothèse 2 ===\n");
+        System.out.println("\nTHÈME 1 — Problématique 1 — Hypothèse 2 \n");
         int idCT = g.getId("CT");
 
         System.out.print("Combien de particuliers (≤10) ? ");
@@ -128,7 +133,7 @@ public class HO1theme1 {
 
     public static void problematique2(graph g) {
 
-        System.out.println("\n=== THÈME 1 — Problématique 2 — CPP ===\n");
+        System.out.println("\n THÈME 1 — Problématique 2 — CPP \n");
 
         int idCT = g.getId("CT");
 
@@ -136,7 +141,7 @@ public class HO1theme1 {
 
         System.out.println("Circuit du postier chinois : ");
         System.out.println(formater(g, circuit));
-        System.out.println("\nLongueur du circuit : " + (circuit.size() - 1) + " arêtes (approx.)");
+        System.out.println("\nLongueur du circuit : " + (circuit.size() - 1) + " arêtes");
     }
     private static int getDistanceDirecte(graph g, int u, int v) {
         for (rue r : g.getAdj().get(u))

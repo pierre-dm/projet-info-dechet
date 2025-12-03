@@ -69,7 +69,7 @@ public class HO1theme2 {
         List<List<Integer>> tournees =
                 decoupecapacite.decouper(ordre, caps, C, idCT);
 
-        System.out.println("=== Approche 1 : Plus proche voisin ===");
+        System.out.println("Approche 1 : Plus proche voisin ");
         afficher(ordre, tournees, g);
     }
 
