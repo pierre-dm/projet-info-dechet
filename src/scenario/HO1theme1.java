@@ -8,43 +8,61 @@ import java.io.IOException;
 import java.util.*;
 
 public class HO1theme1 {
-    public static void executer(Scanner sc)throws IOException {
+    public static void executer(Scanner sc) throws IOException {
         graph g = new graph();
         g.chargerDepuisFichier("graph1.txt");
-        System.out.println("HO1 Thème 1 ");
-        System.out.println("1. H01 Thème 1 problematique 1");
-        System.out.println("2. H01 Thème 1 problematique 2");
-        System.out.println("0. retour");
-        System.out.print("Votre choix : ");
-        String choix = sc.nextLine().trim();
-        switch (choix) {
-            case "1":
-                System.out.println("1. H01 Thème 1 problematique 1 hypothese 1");
-                System.out.println("2. H01 Thème 1 problematique 1 hypothese 2");
-                System.out.println("0. retour");
-                System.out.print("Votre choix : ");
-                choix = sc.nextLine().trim();
-                switch (choix) {
-                    case "1":
-                        pb1hypothese1(g, sc);
-                        break;
-                    case "2":
-                        pb1hypothese2(g, sc);
-                        break;
-                    case "0":
-                        return;
-                }
-                break;
-            case "2":
-                problematique2(g);
-                break;
-            case "0":
-                return;
-            default:
-                System.out.println("Choix invalide.\n");
-        }
 
+        while (true) {
+            System.out.println("HO1 Thème 1 ");
+            System.out.println("1. H01 Thème 1 problematique 1");
+            System.out.println("2. H01 Thème 1 problematique 2");
+            System.out.println("0. retour");
+            System.out.print("Votre choix : ");
+
+            String choix = sc.nextLine().trim();
+
+            switch (choix) {
+                case "1":
+                    while (true) {
+                        System.out.println("1. H01 Thème 1 problematique 1 hypothese 1");
+                        System.out.println("2. H01 Thème 1 problematique 1 hypothese 2");
+                        System.out.println("0. retour");
+                        System.out.print("Votre choix : ");
+
+                        String choixHyp = sc.nextLine().trim();
+
+                        switch (choixHyp) {
+                            case "1":
+                                pb1hypothese1(g, sc);
+                                break;
+                            case "2":
+                                pb1hypothese2(g, sc);
+                                break;
+                            case "0":
+                                break;
+                            default:
+                                System.out.println("Choix invalide.\n");
+                        }
+
+                        if (choixHyp.equals("0")) {
+                            break;
+                        }
+                    }
+                    break;
+
+                case "2":
+                    problematique2(g);
+                    break;
+
+                case "0":
+                    return;
+
+                default:
+                    System.out.println("Choix invalide.\n");
+            }
+        }
     }
+
 
     public static void pb1hypothese1(graph g, Scanner sc) {
 
