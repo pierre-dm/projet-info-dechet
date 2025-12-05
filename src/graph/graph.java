@@ -34,6 +34,11 @@ public class graph {
         adj.get(A).add(new rue(B, distance));
         adj.get(B).add(new rue(A, distance));
     }
+    public void ajouterRueOriente(String a, String b, int distance) {
+        int A = ajouterCroisement(a);
+        int B = ajouterCroisement(b);
+        adj.get(A).add(new rue(B, distance));
+    }
 
     public void chargerDepuisFichier(String fichier) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(fichier))) {
@@ -56,6 +61,18 @@ public class graph {
                     int dist = Integer.parseInt(parts[2]);
                     int capaciteB = Integer.parseInt(parts[3]);
                     ajouterRueDoubleSens(a, b, dist);
+                    int B = ajouterCroisement(b);
+                    capacites.set(B, capaciteB);
+                }
+                else if (parts.length == 5) {
+                    String a = parts[0];
+                    String b = parts[1];
+                    int dist = Integer.parseInt(parts[2]);
+                    int capaciteB = Integer.parseInt(parts[3]);
+                    String type = parts[4];
+                    if (type.equalsIgnoreCase("O")) {
+                        ajouterRueOriente(a, b, dist);
+                    }
                     int B = ajouterCroisement(b);
                     capacites.set(B, capaciteB);
                 }

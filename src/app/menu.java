@@ -1,4 +1,6 @@
-package scenario;
+package app;
+
+import scenario.*;
 
 import java.util.*;
 
@@ -8,6 +10,9 @@ public class menu {
         System.out.println("1. H01 Thème 1");
         System.out.println("2. H01 Thème 2");
         System.out.println("3. H01 Thème 3");
+        System.out.println("4. H02 Thème 1");
+        System.out.println("5. H02 Thème 2");
+        System.out.println("6. H02 Thème 3");
         System.out.println("0. retour");
         System.out.print("Votre choix : ");
         String choix = sc.nextLine().trim();
@@ -21,6 +26,12 @@ public class menu {
             case "3":
                 HO1theme3.executer(sc);
                 break;
+            case "4":
+                HO2theme1.executer(sc);
+            case "5":
+                HO2theme2.executer(sc);
+            case "6":
+                HO2theme3.executer(sc);
             case "0":
                 return;
             default:
