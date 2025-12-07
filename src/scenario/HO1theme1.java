@@ -60,8 +60,6 @@ public class HO1theme1 {
             }
         }
     }
-
-    // Problématique 1 – H1
     public static void pb1hypothese1(graph g, Scanner sc) {
 
         System.out.println("\nHypothèse 1");
@@ -116,8 +114,6 @@ public class HO1theme1 {
             this.v = v;
         }
     }
-
-    // Problématique 1 – H2
     public static void pb1hypothese2(graph g, Scanner sc) {
 
         System.out.println("\nHypothèse 2 ");

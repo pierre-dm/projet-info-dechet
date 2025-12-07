@@ -8,16 +8,14 @@ import java.io.IOException;
 import java.util.*;
 
 public class HO2theme1 {
-
-     // Menu principal du thème 1 – HO2
     public static void executer(Scanner sc) throws IOException {
 
         while (true) {
             System.out.println();
             System.out.println("HO2 Thème 1 (graphe orienté)");
             System.out.println();
-            System.out.println("1. Problématique 1");
-            System.out.println("2. Problématique 2 (CPP dirigé)");
+            System.out.println("1. H01 Thème 1 problematique 1");
+            System.out.println("2. H01 Thème 1 problematique 2");
             System.out.println("0. Retour");
             System.out.println();
             System.out.print("Votre choix : ");
@@ -39,15 +37,12 @@ public class HO2theme1 {
         }
     }
 
-
-     // Sous-menu Problématique 1 – HO2
     private static void menuProblematique1(Scanner sc) {
         while (true) {
             System.out.println();
-            System.out.println("HO2 – Thème 1 – Problématique 1");
-            System.out.println("1. Hypothèse 1 (un particulier sur une arête)");
-            System.out.println("2. Hypothèse 2 (tournée d’une dizaine de particuliers)");
-            System.out.println("0. Retour");
+            System.out.println("1. H01 Thème 1 problematique 1 hypothese 1");
+            System.out.println("2. H01 Thème 1 problematique 1 hypothese 2");
+            System.out.println("0. retour");
             System.out.println();
             System.out.print("Votre choix : ");
 
@@ -56,7 +51,6 @@ public class HO2theme1 {
 
             try {
                 graph g = new graph();
-                // graphe orienté de base (sert aussi pour le cas 2.1 de la problématique 2)
                 g.chargerDepuisFichierOriente("graph1HO2.txt");
 
                 if (choixHyp.equals("1")) {
@@ -72,13 +66,9 @@ public class HO2theme1 {
             }
         }
     }
-
-     //PROBLÉMATIQUE 1 – HYPOTHÈSE 1
-
     public static void pb1hypothese1(graph g, Scanner sc) {
 
-        System.out.println("\nHO2 – Problématique 1 – Hypothèse 1");
-
+        System.out.println("\nHypothèse 1");
         int idCT = g.getId("CT");
         if (idCT < 0) {
             System.out.println("Erreur : sommet CT introuvable.\n");
@@ -100,35 +90,20 @@ public class HO2theme1 {
             System.out.println("Erreur : sommet inconnu.\n");
             return;
         }
-
-        // on les copie dans des int modifiables
         int u = uObj;
         int v = vObj;
-
-        // poids des arcs orientés
-        int wUV = getDistanceArc(g, u, v); // arc U -> V
-        int wVU = getDistanceArc(g, v, u); // arc V -> U
-
-        // aucun arc dans aucun sens
+        int wUV = getDistanceArc(g, u, v);
+        int wVU = getDistanceArc(g, v, u);
         if (wUV < 0 && wVU < 0) {
             System.out.println("Erreur : il n’existe aucun arc entre " + nomU + " et " + nomV + ".\n");
             return;
         }
-
-        // Cas où seul V->U existe : on inverse la convention, de sorte que l'on
-        // considère toujours que "l'arc du particulier" est U->V.
         if (wUV < 0 && wVU >= 0) {
             int tmp = u; u = v; v = tmp;
             String tmpNom = nomU; nomU = nomV; nomV = tmpNom;
             int tmpW = wUV; wUV = wVU; wVU = tmpW;
         }
-
-        // À partir d’ici : wUV >= 0 (U->V existe forcément).
-        // wVU peut exister ou pas (double sens ou sens unique).
-
-        // Dijkstra aller depuis CT
         Resultat aller = dijkstra.executer(g.getAdj(), idCT);
-        // Dijkstra retour depuis CT dans le graphe inversé
         List<List<rue>> adjInv = construireAdjInverse(g);
         Resultat retour = dijkstra.executer(adjInv, idCT);
 
@@ -142,8 +117,6 @@ public class HO2theme1 {
         List<Integer> meilleurChemin = null;
         int meilleurCout = INF;
         String description = "";
-
-        // sens unique
         if (wUV >= 0 && wVU < 0) {
             if (retour.dist[v] == INF) {
                 System.out.println("Le sommet " + nomV + " ne peut pas revenir à CT.\n");
@@ -153,13 +126,10 @@ public class HO2theme1 {
             int cout = aller.dist[u] + wUV + retour.dist[v];
 
             List<Integer> chemin = new ArrayList<>();
-            // CT -> ... -> U
             chemin.addAll(aller.reconstruireChemin(u));
-            // U -> V (arc du particulier)
             chemin.add(v);
-            // V -> ... -> CT (à partir du chemin CT->...->V dans le graphe inverse)
-            List<Integer> vVersCt = retour.reconstruireChemin(v); // chemin CT -> ... -> V dans G^-1
-            Collections.reverse(vVersCt);                         // V -> ... -> CT dans G
+            List<Integer> vVersCt = retour.reconstruireChemin(v);
+            Collections.reverse(vVersCt);
             for (int i = 1; i < vVersCt.size(); i++) {
                 chemin.add(vVersCt.get(i));
             }
@@ -168,35 +138,24 @@ public class HO2theme1 {
             meilleurCout   = cout;
             description    = "Cas 1 (sens unique U->V) : CT -> ... -> U -> V -> ... -> CT";
         }
-
-        //double sens:
-
         if (wUV >= 0 && wVU >= 0) {
             if (aller.dist[v] == INF || retour.dist[u] == INF || retour.dist[v] == INF) {
                 System.out.println("Certains chemins aller/retour ne sont pas atteignables.\n");
-                // on ne retourne pas forcément : il se peut que le cas 1 ait déjà donné une solution
             } else {
 
                 int dCTU = aller.dist[u];
                 int dCTV = aller.dist[v];
                 int dUCT = retour.dist[u];
                 int dVCT = retour.dist[v];
-
-                // 1) CT -> ... -> U -> V -> U -> ... -> CT
                 int cout1 = dCTU + wUV + wVU + dUCT;
-                // 2) CT -> ... -> U -> V -> ... -> CT
                 int cout2 = dCTU + wUV + dVCT;
-                // 3) CT -> ... -> V -> U -> V -> U -> ... -> CT
                 int cout3 = dCTV + wVU + wUV + dUCT;
-                // 4) CT -> ... -> V -> U -> V -> ... -> CT
                 int cout4 = dCTV + wVU + dVCT;
-
-                // 1)
                 {
                     List<Integer> c = new ArrayList<>();
-                    c.addAll(aller.reconstruireChemin(u));  // CT -> ... -> U
-                    c.add(v);                               // U -> V
-                    c.add(u);                               // V -> U
+                    c.addAll(aller.reconstruireChemin(u));
+                    c.add(v);
+                    c.add(u);
                     List<Integer> seq = retour.reconstruireChemin(u);
                     Collections.reverse(seq);               // U -> ... -> CT
                     for (int i = 1; i < seq.size(); i++) c.add(seq.get(i));
@@ -207,14 +166,12 @@ public class HO2theme1 {
                         description    = "Cas 2 – chemin 1 : CT -> ... -> U -> V -> U -> ... -> CT";
                     }
                 }
-
-                // 2)
                 {
                     List<Integer> c = new ArrayList<>();
-                    c.addAll(aller.reconstruireChemin(u));  // CT -> ... -> U
-                    c.add(v);                               // U -> V
+                    c.addAll(aller.reconstruireChemin(u));
+                    c.add(v);
                     List<Integer> seq = retour.reconstruireChemin(v);
-                    Collections.reverse(seq);               // V -> ... -> CT
+                    Collections.reverse(seq);
                     for (int i = 1; i < seq.size(); i++) c.add(seq.get(i));
 
                     if (cout2 < meilleurCout) {
@@ -223,15 +180,13 @@ public class HO2theme1 {
                         description    = "Cas 2 – chemin 2 : CT -> ... -> U -> V -> ... -> CT";
                     }
                 }
-
-                // 3)
                 {
                     List<Integer> c = new ArrayList<>();
-                    c.addAll(aller.reconstruireChemin(v));  // CT -> ... -> V
-                    c.add(u);                               // V -> U
-                    c.add(v);                               // U -> V
+                    c.addAll(aller.reconstruireChemin(v));
+                    c.add(u);
+                    c.add(v);
                     List<Integer> seq = retour.reconstruireChemin(u);
-                    Collections.reverse(seq);               // U -> ... -> CT
+                    Collections.reverse(seq);
                     for (int i = 1; i < seq.size(); i++) c.add(seq.get(i));
 
                     if (cout3 < meilleurCout) {
@@ -240,15 +195,13 @@ public class HO2theme1 {
                         description    = "Cas 2 – chemin 3 : CT -> ... -> V -> U -> V -> U -> ... -> CT";
                     }
                 }
-
-                // 4)
                 {
                     List<Integer> c = new ArrayList<>();
-                    c.addAll(aller.reconstruireChemin(v));  // CT -> ... -> V
-                    c.add(u);                               // V -> U
-                    c.add(v);                               // U -> V
+                    c.addAll(aller.reconstruireChemin(v));
+                    c.add(u);
+                    c.add(v);
                     List<Integer> seq = retour.reconstruireChemin(v);
-                    Collections.reverse(seq);               // V -> ... -> CT
+                    Collections.reverse(seq);
                     for (int i = 1; i < seq.size(); i++) c.add(seq.get(i));
 
                     if (cout4 < meilleurCout) {
@@ -270,11 +223,9 @@ public class HO2theme1 {
         System.out.println("Coût total : " + meilleurCout + "\n");
     }
 
-    //PROBLÉMATIQUE 1 – HYPOTHÈSE 2 (HO2, tournées)
-
     private static class Particulier {
-        final int u; // extrémité 1
-        final int v; // extrémité 2
+        final int u;
+        final int v;
 
         Particulier(int u, int v) {
             this.u = u;
@@ -284,7 +235,7 @@ public class HO2theme1 {
 
     public static void pb1hypothese2(graph g, Scanner sc) {
 
-        System.out.println("\nTHÈME 1 — HO2 — Problématique 1 — Hypothèse 2");
+        System.out.println("\n Hypothèse 2");
 
         int idCT = g.getId("CT");
         if (idCT < 0) {
@@ -297,7 +248,6 @@ public class HO2theme1 {
 
         List<Particulier> particuliers = new ArrayList<>();
 
-        // Saisie des particuliers
         for (int i = 1; i <= k; i++) {
             System.out.println();
             System.out.print("Particulier " + i + " – Extrémité 1 (U) : ");
@@ -322,8 +272,6 @@ public class HO2theme1 {
                 System.out.println("Erreur : il n'existe aucun arc entre " + nomU + " et " + nomV + ".\n");
                 return;
             }
-
-            // si seul V->U existe, on inverse (on veut toujours U->V existant)
             if (wUV < 0 && wVU >= 0) {
                 int tmp = u; u = v; v = tmp;
             }
@@ -339,7 +287,6 @@ public class HO2theme1 {
         boolean[] visite = new boolean[particuliers.size()];
         int restant = particuliers.size();
 
-        // Heuristique "plus proche particulier" adaptée au graphe orienté
         while (restant > 0) {
 
             Resultat resFromA = dijkstra.executer(g.getAdj(), current);
@@ -359,12 +306,11 @@ public class HO2theme1 {
                 int dAu = resFromA.dist[u];
                 int dAv = resFromA.dist[v];
 
-                int wUV = getDistanceArc(g, u, v); // on a garanti que U->V existe
-                int wVU = getDistanceArc(g, v, u); // peut exister ou non
+                int wUV = getDistanceArc(g, u, v);
+                int wVU = getDistanceArc(g, v, u);
 
-                if (wUV < 0) continue; // sécurité
+                if (wUV < 0) continue;
 
-                // A -> ... -> U -> V
                 if (dAu < INF) {
                     int cost1 = dAu + wUV;
                     if (cost1 < bestCost) {
@@ -372,13 +318,12 @@ public class HO2theme1 {
                         bestIdx  = i;
 
                         List<Integer> seg = resFromA.reconstruireChemin(u);
-                        seg.add(v);              // U -> V
+                        seg.add(v);
                         bestSegment   = seg;
                         bestNewCurrent = v;
                     }
                 }
 
-                // A -> ... -> V -> U -> V (si V->U existe)
                 if (wVU >= 0 && dAv < INF) {
                     int cost2 = dAv + wVU + wUV;
                     if (cost2 < bestCost) {
@@ -386,8 +331,8 @@ public class HO2theme1 {
                         bestIdx  = i;
 
                         List<Integer> seg = resFromA.reconstruireChemin(v);
-                        seg.add(u);              // V -> U
-                        seg.add(v);              // U -> V
+                        seg.add(u);
+                        seg.add(v);
                         bestSegment   = seg;
                         bestNewCurrent = v;
                     }
@@ -400,17 +345,14 @@ public class HO2theme1 {
                 break;
             }
 
-            // ajoute le segment sans répéter le sommet de départ
             for (int i = 1; i < bestSegment.size(); i++) {
                 tour.add(bestSegment.get(i));
             }
 
             visite[bestIdx] = true;
             restant--;
-            current = bestNewCurrent;  // on repart de V
+            current = bestNewCurrent;
         }
-
-        // Retour final à CT
         if (current != idCT) {
             Resultat resBack = dijkstra.executer(g.getAdj(), current);
             if (resBack.dist[idCT] == INF) {
@@ -428,8 +370,6 @@ public class HO2theme1 {
         System.out.println(formater(g, tour));
     }
 
-
-     //PROBLÉMATIQUE 2 – CPP dirigé
 
     public static void executerCPP(graph g) {
         System.out.println("\nTHÈME 1 – HO2 – Problématique 2 – CPP dirigé\n");
@@ -450,11 +390,13 @@ public class HO2theme1 {
     }
 
     public static void problematique2(Scanner sc) {
-        System.out.println("\nTHÈME 1 – HO2 – Problématique 2 – CPP dirigé\n");
+        System.out.println("\nProblématique 2 – CPP dirigé\n");
+        System.out.println();
         System.out.println("1. Cas 2.1 : tous les sommets de degré pair (in = out)");
         System.out.println("2. Cas 2.2 : exactement deux sommets impairs");
         System.out.println("3. Cas 2.3 : cas général (plusieurs sommets impairs)");
         System.out.println("0. Retour");
+        System.out.println();
         System.out.print("Votre choix : ");
 
         String choix = sc.nextLine().trim();
@@ -503,7 +445,6 @@ public class HO2theme1 {
             for (rue r : adj.get(u)) {
                 int v = r.getDestination();
                 int d = r.getDistance();
-                // dans le graphe inverse, on ajoute l'arc v -> u
                 inv.get(v).add(new rue(u, d));
             }
         }
@@ -518,8 +459,6 @@ public class HO2theme1 {
     private static List<Integer> circuitEulerienOriente(graph g, int start) {
         List<List<rue>> adj = g.getAdj();
         int n = adj.size();
-
-        // indice courant dans la liste d'arcs sortants de chaque sommet
         int[] pos = new int[n];
 
         Deque<Integer> pile = new ArrayDeque<>();
@@ -536,7 +475,6 @@ public class HO2theme1 {
                 int v = e.getDestination();
                 pile.push(v);
             } else {
-                // plus d’arc sortant : on remonte et on ajoute u au circuit
                 circuit.add(pile.pop());
             }
         }
