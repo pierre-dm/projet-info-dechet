@@ -13,10 +13,13 @@ public class HO1theme1 {
         g.chargerDepuisFichier("graph1.txt");
 
         while (true) {
+            System.out.println();
             System.out.println("HO1 Thème 1 ");
+            System.out.println();
             System.out.println("1. H01 Thème 1 problematique 1");
             System.out.println("2. H01 Thème 1 problematique 2");
             System.out.println("0. retour");
+            System.out.println();
             System.out.print("Votre choix : ");
 
             String choix = sc.nextLine().trim();
@@ -24,9 +27,11 @@ public class HO1theme1 {
             switch (choix) {
                 case "1":
                     while (true) {
+                        System.out.println();
                         System.out.println("1. H01 Thème 1 problematique 1 hypothese 1");
                         System.out.println("2. H01 Thème 1 problematique 1 hypothese 2");
                         System.out.println("0. retour");
+                        System.out.println();
                         System.out.print("Votre choix : ");
 
                         String choixHyp = sc.nextLine().trim();

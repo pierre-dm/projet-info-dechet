@@ -8,6 +8,9 @@ public class menu {
         Scanner sc = new Scanner(System.in);
 
         while (true) {
+            System.out.println();
+            System.out.println("    MENU");
+            System.out.println();
             System.out.println("1. H01 Thème 1");
             System.out.println("2. H01 Thème 2");
             System.out.println("3. H01 Thème 3");
@@ -15,6 +18,7 @@ public class menu {
             System.out.println("5. H02 Thème 2");
             System.out.println("6. H02 Thème 3");
             System.out.println("0. retour");
+            System.out.println();
             System.out.print("Votre choix : ");
 
             String choix = sc.nextLine().trim();

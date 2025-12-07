@@ -11,12 +11,16 @@ public class HO1theme2 {
         g.chargerDepuisFichier("graphtheme2.txt");
         int idCT = g.getId("CT");
         int C = 10;
+        System.out.println();
         System.out.println("HO1 Thème 2 ");
+        System.out.println();
         System.out.println("Sommets chargés : " + g.getNbcroisements());
         System.out.println("Capacité camion : " + C + "\n");
+        System.out.println();
         System.out.println("1. H01 Thème 2 approche 1");
         System.out.println("2. H01 Thème 2 approche 2");
         System.out.println("0. retour");
+        System.out.println();
         System.out.print("Votre choix : ");
         String choix = sc.nextLine().trim();
         switch (choix) {
@@ -66,7 +70,7 @@ public class HO1theme2 {
         List<List<Integer>> tournees =
                 decoupecapacite.decouper(ordre, caps, C, idCT);
 
-        System.out.println("Approche 1 : Plus proche voisin ");
+        System.out.println("\nApproche 1 : Plus proche voisin ");
         afficher(ordre, tournees, g);
     }
 
@@ -89,22 +93,19 @@ public class HO1theme2 {
         for (int idx : preordreReduit) {
             ordre.add(points.get(idx));
         }
-
-        // 6) Shortcutting : suppression des visites redondantes
         ordre = shortcutting.appliquer(ordre);
-
-        // 7) Découpage en tournées selon la capacité du camion
         int[] caps = g.getToutesCapacites();
         List<List<Integer>> tournees =
                 decoupecapacite.decouper(ordre, caps, C, idCT);
 
-        System.out.println("\n=== Approche 2 : MST + DFS + shortcutting ===");
+        System.out.println("\nApproche 2 : MST");
         afficher(ordre, tournees, g);
     }
 
     private static void afficher(List<Integer> ordre, List<List<Integer>> tournees, graph g) {
-        System.out.print("Ordre : ");
+        System.out.print("\nOrdre : ");
         for (int v : ordre) System.out.print(g.getNom(v) + " ");
+        System.out.println();
         System.out.println("\nTournées :");
 
         int i = 1;
@@ -127,62 +128,5 @@ public class HO1theme2 {
                 dist[i][j] = res.dist[pts.get(j)];
         }
         return dist;
-    }
-
-    private static List<Integer> DFSparent(int[] parent) {
-        int n = parent.length;
-        List<List<Integer>> enfants = new ArrayList<>();
-        for (int i = 0; i < n; i++) enfants.add(new ArrayList<>());
-
-        for (int v = 0; v < n; v++)
-            if (parent[v] != -1)
-                enfants.get(parent[v]).add(v);
-
-        List<Integer> ordre = new ArrayList<>();
-        dfs(0, enfants, ordre);
-        return ordre;
-    }
-
-    private static void dfs(int u, List<List<Integer>> enfants, List<Integer> ordre) {
-        ordre.add(u);
-        for (int v : enfants.get(u))
-            dfs(v, enfants, ordre);
-    }
-    private static List<Integer> preordreAvecCapacites(
-            int[] parent, int rootIndex,
-            List<Integer> points, graph g) {
-
-        int n = parent.length;
-        List<List<Integer>> enfants = new ArrayList<>();
-        for (int i = 0; i < n; i++) enfants.add(new ArrayList<>());
-
-        for (int v = 0; v < n; v++)
-            if (parent[v] != -1)
-                enfants.get(parent[v]).add(v);
-
-        List<Integer> ordre = new ArrayList<>();
-        boolean[] visite = new boolean[n];
-
-        dfsTrie(rootIndex, enfants, visite, ordre, points, g);
-        return ordre;
-    }
-
-    private static void dfsTrie(
-            int u, List<List<Integer>> enfants,
-            boolean[] visite, List<Integer> ordre,
-            List<Integer> points, graph g) {
-
-        visite[u] = true;
-        ordre.add(u);
-
-        List<Integer> fils = new ArrayList<>(enfants.get(u));
-
-        fils.sort(Comparator.comparingInt(idx ->
-                g.getCapacite(points.get(idx)))
-        );
-
-        for (int v : fils)
-            if (!visite[v])
-                dfsTrie(v, enfants, visite, ordre, points, g);
     }
 }

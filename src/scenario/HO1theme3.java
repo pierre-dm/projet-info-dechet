@@ -15,10 +15,13 @@ public class HO1theme3 {
         g.chargerDepuisFichier("graph_secteur.txt");
         System.out.println();
         System.out.println("HO1 Thème 3 ");
+        System.out.println();
         System.out.println("Sommets chargés : " + g.getNbcroisements());
+        System.out.println();
         System.out.println("1. H01 Thème 3 Hypothese 1");
         System.out.println("2. H01 Thème 3 Hypothese 2");
         System.out.println("0. retour");
+        System.out.println();
         System.out.print("Votre choix : ");
         String choix = sc.nextLine().trim();
         int[] jours = Coloration.welshPowell(g);
