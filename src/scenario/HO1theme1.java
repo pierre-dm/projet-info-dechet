@@ -53,7 +53,7 @@ public class HO1theme1 {
                     break;
 
                 case "2":
-                    problematique2(sc);
+                    problematique2(g);
                     break;
 
                 case "0":
@@ -64,10 +64,6 @@ public class HO1theme1 {
             }
         }
     }
-
-    // ------------------------------------------------------------
-    // PROBLÉMATIQUE 1 – HYPOTHÈSE 1 (inchangée)
-    // ------------------------------------------------------------
     public static void pb1hypothese1(graph g, Scanner sc) {
 
         System.out.println("\nTHÈME 1 — Problématique 1 — Hypothèse 1");
@@ -114,10 +110,6 @@ public class HO1theme1 {
         System.out.println("Chemin optimal : " + formater(g, chemin));
     }
 
-    // ------------------------------------------------------------
-    // PROBLÉMATIQUE 1 – HYPOTHÈSE 2 (réécrite pour suivre ton texte)
-    // ------------------------------------------------------------
-
     private static class Particulier {
         final int u;
         final int v;
@@ -134,8 +126,6 @@ public class HO1theme1 {
 
         System.out.print("Combien de particuliers (≤10) ? ");
         int k = Integer.parseInt(sc.nextLine().trim());
-
-        // Liste des particuliers sous forme d'arêtes (u, v)
         List<Particulier> particuliers = new ArrayList<>();
 
         for (int i = 1; i <= k; i++) {
@@ -169,8 +159,6 @@ public class HO1theme1 {
         boolean[] visite = new boolean[particuliers.size()];
         int restant = particuliers.size();
         final int INF = Integer.MAX_VALUE;
-
-        // Heuristique du plus proche voisin sur les arêtes
         while (restant > 0) {
             Resultat res = dijkstra.executer(g.getAdj(), current);
 
@@ -187,9 +175,7 @@ public class HO1theme1 {
                 int dV = res.dist[p.v];
                 int w = getDistanceDirecte(g, p.u, p.v);
 
-                if (w < 0) continue; // sécurité
-
-                // Option 1 : A -> ... -> U -> V (on termine en V)
+                if (w < 0) continue;
                 if (dU < INF) {
                     int coutUV = dU + w;
                     if (coutUV < bestCost) {
@@ -199,8 +185,6 @@ public class HO1theme1 {
                         bestExit  = p.v;
                     }
                 }
-
-                // Option 2 : A -> ... -> V -> U (on termine en U)
                 if (dV < INF) {
                     int coutVU = dV + w;
                     if (coutVU < bestCost) {
@@ -217,24 +201,17 @@ public class HO1theme1 {
                         + g.getNom(current) + ".\n");
                 break;
             }
-
-            // On marque ce particulier comme visité
             visite[bestIdx] = true;
             restant--;
-
-            // Chemin A -> ... -> bestEntry
             List<Integer> cheminVersEntry = res.reconstruireChemin(bestEntry);
             for (int i = 1; i < cheminVersEntry.size(); i++) {
                 tour.add(cheminVersEntry.get(i));
             }
 
-            // Traversée de l'arête pour ramasser les encombrants
             tour.add(bestExit);
 
-            current = bestExit; // nouveau sommet de départ
+            current = bestExit;
         }
-
-        // Retour au centre de traitement
         if (current != idCT) {
             Resultat resRetour = dijkstra.executer(g.getAdj(), current);
             if (resRetour.dist[idCT] == INF) {
@@ -251,11 +228,7 @@ public class HO1theme1 {
         System.out.println("\nTournée heuristique (plus proche voisin sur les arêtes) : ");
         System.out.println(formater(g, tour));
     }
-
-    // ------------------------------------------------------------
-    // PROBLÉMATIQUE 2 (CPP) – inchangée
-    // ------------------------------------------------------------
-    public static void executerCPP(graph g) {
+    public static void problematique2(graph g) {
 
         System.out.println("\n THÈME 1 — Problématique 2 — CPP \n");
 
@@ -267,47 +240,6 @@ public class HO1theme1 {
         System.out.println(formater(g, circuit));
         System.out.println("\nLongueur du circuit : " + (circuit.size() - 1) + " arêtes");
     }
-
-    public static void problematique2(Scanner sc) {
-        System.out.println("\nTHÈME 1 — Problématique 2 — CPP\n");
-        System.out.println("1. Cas 2.1 : tous les sommets de degré pair");
-        System.out.println("2. Cas 2.2 : exactement deux sommets impairs");
-        System.out.println("3. Cas 2.3 : cas général (plusieurs sommets impairs)");
-        System.out.println("0. Retour");
-        System.out.print("Votre choix : ");
-
-        String choix = sc.nextLine().trim();
-        String fichier;
-
-        switch (choix) {
-            case "1":
-                // Cas idéal : tous les sommets pairs → on réutilise graph1.txt
-                fichier = "graph1.txt";
-                break;
-            case "2":
-                // Cas 2 sommets impairs
-                fichier = "graphetheme1problematique2cas2.txt";
-                break;
-            case "3":
-                // Cas général
-                fichier = "graphetheme1problematique2cas3.txt";
-                break;
-            default:
-                return; // retour au menu précédent
-        }
-
-        try {
-            graph g = new graph();
-            g.chargerDepuisFichier(fichier);
-            executerCPP(g);  // méthode ci-dessous qui fait l’analyse + appel CPP
-        } catch (IOException e) {
-            System.out.println("Erreur de lecture du fichier " + fichier + " : " + e.getMessage());
-        }
-    }
-
-    // ------------------------------------------------------------
-    // MÉTHODES UTILITAIRES
-    // ------------------------------------------------------------
     private static int getDistanceDirecte(graph g, int u, int v) {
         for (rue r : g.getAdj().get(u))
             if (r.getDestination() == v) return r.getDistance();
