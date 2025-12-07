@@ -8,10 +8,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class HO1theme1 {
-
-    // ------------------------------------------------------------
-    // MENU
-    // ------------------------------------------------------------
     public static void executer(Scanner sc) throws IOException {
         graph g = new graph();
         g.chargerDepuisFichier("graph1.txt");
