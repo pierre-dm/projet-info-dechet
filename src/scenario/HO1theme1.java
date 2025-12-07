@@ -61,9 +61,7 @@ public class HO1theme1 {
         }
     }
 
-    // =========================
     // Problématique 1 – H1
-    // =========================
     public static void pb1hypothese1(graph g, Scanner sc) {
 
         System.out.println("\nHypothèse 1");
@@ -119,9 +117,7 @@ public class HO1theme1 {
         }
     }
 
-    // =========================
     // Problématique 1 – H2
-    // =========================
     public static void pb1hypothese2(graph g, Scanner sc) {
 
         System.out.println("\nHypothèse 2 ");
@@ -237,9 +233,8 @@ public class HO1theme1 {
         System.out.println(formater(g, tour));
     }
 
-    // =========================
+
     // Problématique 2 – CPP
-    // =========================
     public static void executerCPP(graph g) {
 
         System.out.println("\n THÈME 1 — Problématique 2 — CPP \n");
@@ -287,9 +282,6 @@ public class HO1theme1 {
         }
     }
 
-    // =========================
-    // Utilitaires HO1 (non orienté)
-    // =========================
     private static int getDistanceDirecte(graph g, int u, int v) {
         for (rue r : g.getAdj().get(u))
             if (r.getDestination() == v) return r.getDistance();
