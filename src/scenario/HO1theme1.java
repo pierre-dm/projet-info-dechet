@@ -53,7 +53,7 @@ public class HO1theme1 {
                     break;
 
                 case "2":
-                    problematique2(g);
+                    problematique2(sc);
                     break;
 
                 case "0":
@@ -255,7 +255,7 @@ public class HO1theme1 {
     // ------------------------------------------------------------
     // PROBLÉMATIQUE 2 (CPP) – inchangée
     // ------------------------------------------------------------
-    public static void problematique2(graph g) {
+    public static void executerCPP(graph g) {
 
         System.out.println("\n THÈME 1 — Problématique 2 — CPP \n");
 
@@ -266,6 +266,43 @@ public class HO1theme1 {
         System.out.println("Circuit du postier chinois : ");
         System.out.println(formater(g, circuit));
         System.out.println("\nLongueur du circuit : " + (circuit.size() - 1) + " arêtes");
+    }
+
+    public static void problematique2(Scanner sc) {
+        System.out.println("\nTHÈME 1 — Problématique 2 — CPP\n");
+        System.out.println("1. Cas 2.1 : tous les sommets de degré pair");
+        System.out.println("2. Cas 2.2 : exactement deux sommets impairs");
+        System.out.println("3. Cas 2.3 : cas général (plusieurs sommets impairs)");
+        System.out.println("0. Retour");
+        System.out.print("Votre choix : ");
+
+        String choix = sc.nextLine().trim();
+        String fichier;
+
+        switch (choix) {
+            case "1":
+                // Cas idéal : tous les sommets pairs → on réutilise graph1.txt
+                fichier = "graph1.txt";
+                break;
+            case "2":
+                // Cas 2 sommets impairs
+                fichier = "graphetheme1problematique2cas2.txt";
+                break;
+            case "3":
+                // Cas général
+                fichier = "graphetheme1problematique2cas3.txt";
+                break;
+            default:
+                return; // retour au menu précédent
+        }
+
+        try {
+            graph g = new graph();
+            g.chargerDepuisFichier(fichier);
+            executerCPP(g);  // méthode ci-dessous qui fait l’analyse + appel CPP
+        } catch (IOException e) {
+            System.out.println("Erreur de lecture du fichier " + fichier + " : " + e.getMessage());
+        }
     }
 
     // ------------------------------------------------------------
