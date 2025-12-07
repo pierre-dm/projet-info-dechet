@@ -8,6 +8,10 @@ import java.io.IOException;
 import java.util.*;
 
 public class HO1theme1 {
+
+    // ------------------------------------------------------------
+    // MENU
+    // ------------------------------------------------------------
     public static void executer(Scanner sc) throws IOException {
         graph g = new graph();
         g.chargerDepuisFichier("graph1.txt");
@@ -31,21 +35,14 @@ public class HO1theme1 {
 
                         String choixHyp = sc.nextLine().trim();
 
-                        switch (choixHyp) {
-                            case "1":
-                                pb1hypothese1(g, sc);
-                                break;
-                            case "2":
-                                pb1hypothese2(g, sc);
-                                break;
-                            case "0":
-                                break;
-                            default:
-                                System.out.println("Choix invalide.\n");
-                        }
-
-                        if (choixHyp.equals("0")) {
+                        if (choixHyp.equals("1")) {
+                            pb1hypothese1(g, sc);
+                        } else if (choixHyp.equals("2")) {
+                            pb1hypothese2(g, sc);
+                        } else if (choixHyp.equals("0")) {
                             break;
+                        } else {
+                            System.out.println("Choix invalide.\n");
                         }
                     }
                     break;
@@ -63,7 +60,9 @@ public class HO1theme1 {
         }
     }
 
-
+    // ------------------------------------------------------------
+    // PROBLÉMATIQUE 1 – HYPOTHÈSE 1 (inchangée)
+    // ------------------------------------------------------------
     public static void pb1hypothese1(graph g, Scanner sc) {
 
         System.out.println("\nTHÈME 1 — Problématique 1 — Hypothèse 1");
@@ -98,7 +97,6 @@ public class HO1theme1 {
         int near = (res.dist[idA] <= res.dist[idB]) ? idA : idB;
         int far  = (near == idA) ? idB : idA;
 
-        // Coûts
         int coutUneFois = res.dist[near] + longueurAB + res.dist[far];
         int coutAllerRetour = 2 * res.dist[near] + 2 * longueurAB;
 
@@ -111,6 +109,19 @@ public class HO1theme1 {
         System.out.println("Chemin optimal : " + formater(g, chemin));
     }
 
+    // ------------------------------------------------------------
+    // PROBLÉMATIQUE 1 – HYPOTHÈSE 2 (réécrite pour suivre ton texte)
+    // ------------------------------------------------------------
+
+    private static class Particulier {
+        final int u;
+        final int v;
+        Particulier(int u, int v) {
+            this.u = u;
+            this.v = v;
+        }
+    }
+
     public static void pb1hypothese2(graph g, Scanner sc) {
 
         System.out.println("\nTHÈME 1 — Problématique 1 — Hypothèse 2 \n");
@@ -119,34 +130,126 @@ public class HO1theme1 {
         System.out.print("Combien de particuliers (≤10) ? ");
         int k = Integer.parseInt(sc.nextLine().trim());
 
-        List<Integer> points = new ArrayList<>();
-        points.add(idCT);
-
-        Resultat resCT = dijkstra.executer(g.getAdj(), idCT);
+        // Liste des particuliers sous forme d'arêtes (u, v)
+        List<Particulier> particuliers = new ArrayList<>();
 
         for (int i = 1; i <= k; i++) {
-            System.out.print("Particulier " + i + " – Extrémité A : ");
+            System.out.print("Particulier " + i + " – Extrémité 1 : ");
             String A = sc.nextLine().trim();
-            System.out.print("Particulier " + i + " – Extrémité B : ");
+            System.out.print("Particulier " + i + " – Extrémité 2 : ");
             String B = sc.nextLine().trim();
 
-            int idA = g.getId(A);
-            int idB = g.getId(B);
+            Integer idA = g.getId(A);
+            Integer idB = g.getId(B);
 
-            if (idA < 0 || idB < 0) {
-                System.out.println("Sommet inconnu.\n");
+            if (idA == null || idB == null) {
+                System.out.println("Erreur : sommet inconnu.\n");
                 return;
             }
-            int near = (resCT.dist[idA] <= resCT.dist[idB]) ? idA : idB;
-            points.add(near);
+
+            int longueurAB = getDistanceDirecte(g, idA, idB);
+            if (longueurAB < 0) {
+                System.out.println("Erreur : il n'existe pas d'arête directe entre "
+                        + A + " et " + B + ".\n");
+                return;
+            }
+
+            particuliers.add(new Particulier(idA, idB));
         }
 
-        List<Integer> tournee = plusprochevoisin.calculer(g, points);
+        int current = idCT;
+        List<Integer> tour = new ArrayList<>();
+        tour.add(current);
 
-        System.out.println("\nTournée (plus proche voisin) : ");
-        System.out.println(formater(g, tournee));
+        boolean[] visite = new boolean[particuliers.size()];
+        int restant = particuliers.size();
+        final int INF = Integer.MAX_VALUE;
+
+        // Heuristique du plus proche voisin sur les arêtes
+        while (restant > 0) {
+            Resultat res = dijkstra.executer(g.getAdj(), current);
+
+            int bestIdx = -1;
+            int bestCost = INF;
+            int bestEntry = -1;
+            int bestExit  = -1;
+
+            for (int i = 0; i < particuliers.size(); i++) {
+                if (visite[i]) continue;
+                Particulier p = particuliers.get(i);
+
+                int dU = res.dist[p.u];
+                int dV = res.dist[p.v];
+                int w = getDistanceDirecte(g, p.u, p.v);
+
+                if (w < 0) continue; // sécurité
+
+                // Option 1 : A -> ... -> U -> V (on termine en V)
+                if (dU < INF) {
+                    int coutUV = dU + w;
+                    if (coutUV < bestCost) {
+                        bestCost = coutUV;
+                        bestIdx = i;
+                        bestEntry = p.u;
+                        bestExit  = p.v;
+                    }
+                }
+
+                // Option 2 : A -> ... -> V -> U (on termine en U)
+                if (dV < INF) {
+                    int coutVU = dV + w;
+                    if (coutVU < bestCost) {
+                        bestCost = coutVU;
+                        bestIdx = i;
+                        bestEntry = p.v;
+                        bestExit  = p.u;
+                    }
+                }
+            }
+
+            if (bestIdx == -1) {
+                System.out.println("Aucun particulier restant n'est atteignable depuis "
+                        + g.getNom(current) + ".\n");
+                break;
+            }
+
+            // On marque ce particulier comme visité
+            visite[bestIdx] = true;
+            restant--;
+
+            // Chemin A -> ... -> bestEntry
+            List<Integer> cheminVersEntry = res.reconstruireChemin(bestEntry);
+            for (int i = 1; i < cheminVersEntry.size(); i++) {
+                tour.add(cheminVersEntry.get(i));
+            }
+
+            // Traversée de l'arête pour ramasser les encombrants
+            tour.add(bestExit);
+
+            current = bestExit; // nouveau sommet de départ
+        }
+
+        // Retour au centre de traitement
+        if (current != idCT) {
+            Resultat resRetour = dijkstra.executer(g.getAdj(), current);
+            if (resRetour.dist[idCT] == INF) {
+                System.out.println("Attention : CT n'est pas atteignable depuis "
+                        + g.getNom(current) + ".\n");
+            } else {
+                List<Integer> cheminRetour = resRetour.reconstruireChemin(idCT);
+                for (int i = 1; i < cheminRetour.size(); i++) {
+                    tour.add(cheminRetour.get(i));
+                }
+            }
+        }
+
+        System.out.println("\nTournée heuristique (plus proche voisin sur les arêtes) : ");
+        System.out.println(formater(g, tour));
     }
 
+    // ------------------------------------------------------------
+    // PROBLÉMATIQUE 2 (CPP) – inchangée
+    // ------------------------------------------------------------
     public static void problematique2(graph g) {
 
         System.out.println("\n THÈME 1 — Problématique 2 — CPP \n");
@@ -159,9 +262,15 @@ public class HO1theme1 {
         System.out.println(formater(g, circuit));
         System.out.println("\nLongueur du circuit : " + (circuit.size() - 1) + " arêtes");
     }
+
+    // ------------------------------------------------------------
+    // MÉTHODES UTILITAIRES
+    // ------------------------------------------------------------
     private static int getDistanceDirecte(graph g, int u, int v) {
         for (rue r : g.getAdj().get(u))
             if (r.getDestination() == v) return r.getDistance();
+        for (rue r : g.getAdj().get(v))
+            if (r.getDestination() == u) return r.getDistance();
         return -1;
     }
 
