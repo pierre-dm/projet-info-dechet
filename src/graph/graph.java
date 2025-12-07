@@ -79,6 +79,44 @@ public class graph {
             }
         }
     }
+    public void chargerDepuisFichierOriente(String fichier) throws IOException {
+        try (BufferedReader br = new BufferedReader(new FileReader(fichier))) {
+            String ligne;
+            while ((ligne = br.readLine()) != null) {
+                ligne = ligne.trim();
+                if (ligne.isEmpty() || ligne.startsWith("#")) continue;
+
+                String[] parts = ligne.split("\\s+");
+                if (parts.length == 3) {
+                    String a = parts[0];
+                    String b = parts[1];
+                    int dist = Integer.parseInt(parts[2]);
+                    ajouterRueOriente(a, b, dist);          // <-- HO2 : ORIENTÉ
+                } else if (parts.length == 4) {
+                    String a = parts[0];
+                    String b = parts[1];
+                    int dist = Integer.parseInt(parts[2]);
+                    int capaciteB = Integer.parseInt(parts[3]);
+                    ajouterRueOriente(a, b, dist);
+                    int B = ajouterCroisement(b);
+                    capacites.set(B, capaciteB);
+                } else if (parts.length == 5) {
+                    String a = parts[0];
+                    String b = parts[1];
+                    int dist = Integer.parseInt(parts[2]);
+                    int capaciteB = Integer.parseInt(parts[3]);
+                    String type = parts[4];
+                    if (type.equalsIgnoreCase("O")) {
+                        ajouterRueOriente(a, b, dist);
+                    } else {
+                        ajouterRueDoubleSens(a, b, dist);
+                    }
+                    int B = ajouterCroisement(b);
+                    capacites.set(B, capaciteB);
+                }
+            }
+        }
+    }
     public int getId(String nom) {
         return nomVersId.get(nom);
     }

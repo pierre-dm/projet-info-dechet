@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class HO1theme1 {
+
     public static void executer(Scanner sc) throws IOException {
         graph g = new graph();
         g.chargerDepuisFichier("graph1.txt");
@@ -59,6 +60,10 @@ public class HO1theme1 {
             }
         }
     }
+
+    // =========================
+    // Problématique 1 – H1
+    // =========================
     public static void pb1hypothese1(graph g, Scanner sc) {
 
         System.out.println("\nHypothèse 1");
@@ -114,6 +119,9 @@ public class HO1theme1 {
         }
     }
 
+    // =========================
+    // Problématique 1 – H2
+    // =========================
     public static void pb1hypothese2(graph g, Scanner sc) {
 
         System.out.println("\nHypothèse 2 ");
@@ -156,6 +164,7 @@ public class HO1theme1 {
         boolean[] visite = new boolean[particuliers.size()];
         int restant = particuliers.size();
         final int INF = Integer.MAX_VALUE;
+
         while (restant > 0) {
             Resultat res = dijkstra.executer(g.getAdj(), current);
 
@@ -201,6 +210,7 @@ public class HO1theme1 {
 
             visite[bestIdx] = true;
             restant--;
+
             List<Integer> cheminVersEntry = res.reconstruireChemin(bestEntry);
             for (int i = 1; i < cheminVersEntry.size(); i++) {
                 tour.add(cheminVersEntry.get(i));
@@ -209,6 +219,7 @@ public class HO1theme1 {
 
             current = bestExit;
         }
+
         if (current != idCT) {
             Resultat resRetour = dijkstra.executer(g.getAdj(), current);
             if (resRetour.dist[idCT] == INF) {
@@ -225,6 +236,10 @@ public class HO1theme1 {
         System.out.println("\nTournée heuristique (plus proche voisin sur les arêtes) : ");
         System.out.println(formater(g, tour));
     }
+
+    // =========================
+    // Problématique 2 – CPP
+    // =========================
     public static void executerCPP(graph g) {
 
         System.out.println("\n THÈME 1 — Problématique 2 — CPP \n");
@@ -237,6 +252,7 @@ public class HO1theme1 {
         System.out.println(formater(g, circuit));
         System.out.println("\nLongueur du circuit : " + (circuit.size() - 1) + " arêtes");
     }
+
     public static void problematique2(Scanner sc) {
         System.out.println("\nTHÈME 1 — Problématique 2 — CPP\n");
         System.out.println("1. Cas 2.1 : tous les sommets de degré pair");
@@ -270,6 +286,10 @@ public class HO1theme1 {
             System.out.println("Erreur de lecture du fichier " + fichier + " : " + e.getMessage());
         }
     }
+
+    // =========================
+    // Utilitaires HO1 (non orienté)
+    // =========================
     private static int getDistanceDirecte(graph g, int u, int v) {
         for (rue r : g.getAdj().get(u))
             if (r.getDestination() == v) return r.getDistance();
