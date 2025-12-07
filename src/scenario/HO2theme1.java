@@ -7,16 +7,9 @@ import graph.rue;
 import java.io.IOException;
 import java.util.*;
 
-/**
- * Thème 1 – HO2 : graphe orienté
- *  - Problématique 1 : Hypothèses 1 et 2
- *  - Problématique 2 : CPP dirigé (3 cas)
- */
 public class HO2theme1 {
 
-    /*------------------------------------------------------------
-     *  Menu principal du thème 1 – HO2
-     *------------------------------------------------------------*/
+     // Menu principal du thème 1 – HO2
     public static void executer(Scanner sc) throws IOException {
 
         while (true) {
@@ -46,9 +39,8 @@ public class HO2theme1 {
         }
     }
 
-    /*------------------------------------------------------------
-     *  Sous-menu Problématique 1 – HO2
-     *------------------------------------------------------------*/
+
+     // Sous-menu Problématique 1 – HO2
     private static void menuProblematique1(Scanner sc) {
         while (true) {
             System.out.println();
@@ -81,9 +73,7 @@ public class HO2theme1 {
         }
     }
 
-    /*============================================================
-     *  PROBLÉMATIQUE 1 – HYPOTHÈSE 1 (HO2, graphe orienté)
-     *============================================================*/
+     //PROBLÉMATIQUE 1 – HYPOTHÈSE 1
 
     public static void pb1hypothese1(graph g, Scanner sc) {
 
@@ -153,7 +143,7 @@ public class HO2theme1 {
         int meilleurCout = INF;
         String description = "";
 
-        /*-------------------- Cas 1 : seulement U->V --------------------*/
+        // sens unique
         if (wUV >= 0 && wVU < 0) {
             if (retour.dist[v] == INF) {
                 System.out.println("Le sommet " + nomV + " ne peut pas revenir à CT.\n");
@@ -179,7 +169,8 @@ public class HO2theme1 {
             description    = "Cas 1 (sens unique U->V) : CT -> ... -> U -> V -> ... -> CT";
         }
 
-        /*-------------------- Cas 2 : double sens U<->V --------------------*/
+        //double sens:
+
         if (wUV >= 0 && wVU >= 0) {
             if (aller.dist[v] == INF || retour.dist[u] == INF || retour.dist[v] == INF) {
                 System.out.println("Certains chemins aller/retour ne sont pas atteignables.\n");
@@ -279,9 +270,7 @@ public class HO2theme1 {
         System.out.println("Coût total : " + meilleurCout + "\n");
     }
 
-    /*============================================================
-     *  PROBLÉMATIQUE 1 – HYPOTHÈSE 2 (HO2, tournées)
-     *============================================================*/
+    //PROBLÉMATIQUE 1 – HYPOTHÈSE 2 (HO2, tournées)
 
     private static class Particulier {
         final int u; // extrémité 1
@@ -375,7 +364,7 @@ public class HO2theme1 {
 
                 if (wUV < 0) continue; // sécurité
 
-                // Candidat 1 : A -> ... -> U -> V
+                // A -> ... -> U -> V
                 if (dAu < INF) {
                     int cost1 = dAu + wUV;
                     if (cost1 < bestCost) {
@@ -389,7 +378,7 @@ public class HO2theme1 {
                     }
                 }
 
-                // Candidat 2 : A -> ... -> V -> U -> V (si V->U existe)
+                // A -> ... -> V -> U -> V (si V->U existe)
                 if (wVU >= 0 && dAv < INF) {
                     int cost2 = dAv + wVU + wUV;
                     if (cost2 < bestCost) {
@@ -439,22 +428,20 @@ public class HO2theme1 {
         System.out.println(formater(g, tour));
     }
 
-    /*============================================================
-     *  PROBLÉMATIQUE 2 – CPP dirigé (3 cas HO2)
-     *============================================================*/
+
+     //PROBLÉMATIQUE 2 – CPP dirigé
 
     public static void executerCPP(graph g) {
         System.out.println("\nTHÈME 1 – HO2 – Problématique 2 – CPP dirigé\n");
 
-        int idCT = g.getId("CT");
-        if (idCT < 0) {
+        Integer idCTobj = g.getId("CT");
+        if (idCTobj == null) {
             System.out.println("Erreur : sommet CT introuvable.\n");
             return;
         }
+        int idCT = idCTobj;
 
-        // La classe CPP doit travailler sur le graphe orienté tel quel
-        // (arcs en sens unique respectés).
-        List<Integer> circuit = CPP.calculerCircuit(g, idCT);
+        List<Integer> circuit = circuitEulerienOriente(g, idCT);
 
         System.out.println("Circuit du postier chinois : ");
         System.out.println(formater(g, circuit));
@@ -496,11 +483,6 @@ public class HO2theme1 {
         }
     }
 
-    /*============================================================
-     *  FONCTIONS UTILITAIRES
-     *============================================================*/
-
-    /** distance de l’arc orienté u -> v, -1 s’il n’existe pas */
     private static int getDistanceArc(graph g, int u, int v) {
         for (rue r : g.getAdj().get(u)) {
             if (r.getDestination() == v) {
@@ -510,7 +492,6 @@ public class HO2theme1 {
         return -1;
     }
 
-    /** construit la liste d’adjacence du graphe inverse (tous les arcs renversés) */
     private static List<List<rue>> construireAdjInverse(graph g) {
         List<List<rue>> adj = g.getAdj();
         int n = adj.size();
@@ -529,10 +510,37 @@ public class HO2theme1 {
         return inv;
     }
 
-    /** formatage d’un chemin sous forme CT -> I6 -> I3 -> ... */
     private static String formater(graph g, List<Integer> list) {
         List<String> s = new ArrayList<>();
         for (int id : list) s.add(g.getNom(id));
         return String.join(" -> ", s);
+    }
+    private static List<Integer> circuitEulerienOriente(graph g, int start) {
+        List<List<rue>> adj = g.getAdj();
+        int n = adj.size();
+
+        // indice courant dans la liste d'arcs sortants de chaque sommet
+        int[] pos = new int[n];
+
+        Deque<Integer> pile = new ArrayDeque<>();
+        List<Integer> circuit = new ArrayList<>();
+
+        pile.push(start);
+
+        while (!pile.isEmpty()) {
+            int u = pile.peek();
+            List<rue> edges = adj.get(u);
+
+            if (pos[u] < edges.size()) {
+                rue e = edges.get(pos[u]++);
+                int v = e.getDestination();
+                pile.push(v);
+            } else {
+                // plus d’arc sortant : on remonte et on ajoute u au circuit
+                circuit.add(pile.pop());
+            }
+        }
+        Collections.reverse(circuit);
+        return circuit;
     }
 }
