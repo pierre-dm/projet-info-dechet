@@ -434,14 +434,15 @@ public class HO2theme1 {
     public static void executerCPP(graph g) {
         System.out.println("\nTHÈME 1 – HO2 – Problématique 2 – CPP dirigé\n");
 
-        Integer idCTobj = g.getId("CT");
-        if (idCTobj == null) {
+        Integer idCTObj = g.getId("CT");
+        if (idCTObj == null) {
             System.out.println("Erreur : sommet CT introuvable.\n");
             return;
         }
-        int idCT = idCTobj;
+        int idCT = idCTObj;
 
-        List<Integer> circuit = circuitEulerienOriente(g, idCT);
+        // Ici on utilise un Hierholzer ORIENTÉ (pas le CPP non orienté de HO1)
+        List<Integer> circuit = calculerCircuitEulerienOriente(g, idCT);
 
         System.out.println("Circuit du postier chinois : ");
         System.out.println(formater(g, circuit));
@@ -540,6 +541,41 @@ public class HO2theme1 {
                 circuit.add(pile.pop());
             }
         }
+        Collections.reverse(circuit);
+        return circuit;
+    }
+    private static List<Integer> calculerCircuitEulerienOriente(graph g, int start) {
+        int n = g.getNbcroisements();
+
+        // Copie modifiable des successeurs orientés
+        List<Deque<Integer>> succ = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            succ.add(new ArrayDeque<>());
+        }
+        for (int u = 0; u < n; u++) {
+            for (rue r : g.getAdj().get(u)) {
+                succ.get(u).add(r.getDestination()); // u -> v
+            }
+        }
+
+        Deque<Integer> pile = new ArrayDeque<>();
+        List<Integer> circuit = new ArrayList<>();
+
+        pile.push(start);
+        while (!pile.isEmpty()) {
+            int v = pile.peek();
+            Deque<Integer> voisins = succ.get(v);
+
+            if (!voisins.isEmpty()) {
+                int u = voisins.pollFirst(); // consomme l'arc v -> u
+                pile.push(u);
+            } else {
+                // plus d'arcs sortants : on ajoute au circuit
+                circuit.add(pile.pop());
+            }
+        }
+
+        // on a construit le circuit à l'envers
         Collections.reverse(circuit);
         return circuit;
     }
