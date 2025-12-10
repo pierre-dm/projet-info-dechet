@@ -1,11 +1,8 @@
 package algorithme;
 import java.util.*;
 public class DFS {
-    public static List<Integer> preordre(int[] parent, int root) {
-        return preordre(parent, root, null);
-    }
-    public static List<Integer> preordre(int[] parent, int root,
-                                         Comparator<Integer> triEnfants) {
+
+    public static List<Integer> preordre(int[] parent, int root, Comparator<Integer> triEnfants) {
 
         int n = parent.length;
 
@@ -35,10 +32,7 @@ public class DFS {
         return ordre;
     }
 
-    private static void dfs(int u,
-                            List<List<Integer>> enfants,
-                            boolean[] visite,
-                            List<Integer> ordre) {
+    private static void dfs(int u, List<List<Integer>> enfants, boolean[] visite, List<Integer> ordre) {
         visite[u] = true;
         ordre.add(u);
         for (int v : enfants.get(u)) {

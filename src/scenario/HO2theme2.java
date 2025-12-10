@@ -65,8 +65,7 @@ public class HO2theme2 {
         }
 
         int[] caps = g.getToutesCapacites();
-        List<List<Integer>> tournees =
-                decoupecapacite.decouper(ordre, caps, C, idCT);
+        List<List<Integer>> tournees = decoupecapacite.decouper(ordre, caps, C, idCT);
 
         System.out.println("\nApproche 1 : Plus proche voisin ");
         afficher(ordre, tournees, g);
@@ -83,11 +82,7 @@ public class HO2theme2 {
         int[][] distDir = construireMatriceDistancesDir(g, points);
         int[][] distMST = symetriserPourMST(distDir);
         int[] parent = Prim.calculer(distMST, 0);
-        List<Integer> preordreReduit = DFS.preordre(
-                parent,
-                0,
-                Comparator.comparingInt(idx -> g.getCapacite(points.get(idx)))
-        );
+        List<Integer> preordreReduit = DFS.preordre(parent, 0, Comparator.comparingInt(idx -> g.getCapacite(points.get(idx))));
 
         List<Integer> ordre = new ArrayList<>();
         for (int idx : preordreReduit) {

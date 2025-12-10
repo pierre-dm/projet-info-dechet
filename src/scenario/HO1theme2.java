@@ -67,8 +67,7 @@ public class HO1theme2 {
         }
 
         int[] caps = g.getToutesCapacites();
-        List<List<Integer>> tournees =
-                decoupecapacite.decouper(ordre, caps, C, idCT);
+        List<List<Integer>> tournees = decoupecapacite.decouper(ordre, caps, C, idCT);
 
         System.out.println("\nApproche 1 : Plus proche voisin ");
         afficher(ordre, tournees, g);
